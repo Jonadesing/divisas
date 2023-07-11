@@ -9,7 +9,7 @@ function convertir() {
     }
     else if (document.getElementById("dos").checked) {
         resultado = valore / euro;
-        alert("El cambio de Pesos a Euros oficial es de:€" + resultado);
+        alert("El cambio de Pesos a Euro oficial es de:€" + resultado);
     }
     else {
         alert("Debes completar todos los campos")
