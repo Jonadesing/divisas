@@ -9,7 +9,7 @@ function convertir() {
     //==================VARIABLES=================
     let valore = 0
     let resultado = 0
-    let dolar = 481.25
+    let dolar = 545
     let euro = 300.89
 
     //==================COMPROBAR NUMERO=================
