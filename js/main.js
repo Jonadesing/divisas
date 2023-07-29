@@ -4,6 +4,11 @@ do{nombre = prompt("Ingrese su nombre") } while( ! isNaN(nombre))
    
 console.log("bienvenidx " + nombre + " a la calculadora de carlitos")
 
+
+//=====Definimos el arral para almacenar los resulatados  de la conversión======
+
+let resultadosConversion = [];
+
  //==========Función para obtener el día de la semana en español===================
  function obtenerDiaSemana() {
     const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -49,6 +54,7 @@ function convertir() {
         resultado = valore / dolar
         resultado = resultado.toFixed(2)
         console.log("El cambio de Pesos a Dolar blue es de: $" + resultado)
+        resultadosConversion.push("$" + resultado); //agregamos el resultado al array
     }
     
     //==================CAMBIO DOLAR A EURO=================
@@ -56,11 +62,12 @@ function convertir() {
         resultado = valore / euro;
         resultado = resultado.toFixed(2)
         console.log("El cambio de Pesos a Euro oficial es de: €" + resultado);
+        resultadosConversion.push("€" + resultado);
     }
     
     else {
         console.log("Debes completar todos los campos")
     }
 }
-
+ console.log("Resulatdos de conversion:" , resultadosConversion)
 
