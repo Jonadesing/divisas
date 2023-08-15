@@ -1,73 +1,57 @@
-//============Bienvenida a la pagina!==========
-let nombre = ""
-do{nombre = prompt("Ingrese su nombre") } while( ! isNaN(nombre))
-   
-console.log("bienvenidx " + nombre + " a la calculadora de carlitos")
+const loginSection = document.getElementById('loginSection');
+const calculatorSection = document.getElementById('calculatorSection');
+const loginButton = document.getElementById('loginButton');
+const cotizadorButton = document.getElementById('cotizador');
+const resultadosDiv = document.getElementById('resultados');
 
+const resultadosConversion = [];
 
-//=====Definimos el arral para almacenar los resulatados  de la conversión======
+loginButton.addEventListener('click', function() {
+  // Aquí normalmente verificarías las credenciales del usuario, en este ejemplo solo simularemos el acceso
+  const username = document.getElementById('username').value;
+  if (username) {
+    loginSection.style.display = 'none';
+    calculatorSection.style.display = 'block';
+  }
+});
 
-let resultadosConversion = [];
-
- //==========Función para obtener el día de la semana en español===================
- function obtenerDiaSemana() {
-    const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-    const fechaActual = new Date();
-    const diaSemana = diasSemana[fechaActual.getDay()];
-    return diaSemana;
-}
-
-//=============Función para preguntar si desea saber la fecha actual==========
-function preguntarFechaActual() {
-    const respuesta = prompt("¿Deseas saber la fecha actual? (Sí / No)");
-
-    if (respuesta !== null) {
-        const respuestaNormalizada = respuesta.trim().toLowerCase();
-
-        if (respuestaNormalizada === "sí" || respuestaNormalizada === "si") {
-            const diaSemana = obtenerDiaSemana();
-            console.log("Hoy es " + diaSemana);
-        } else {
-            console.log("¡Ok! No te mostraré la fecha actual.");
-        }
-    }
-}
-
-//===================Llamar a la función al cargar la página========
-preguntarFechaActual();
+cotizadorButton.addEventListener('click', function() {
+  convertir();
+});
 
 function convertir() {
-        //==================VARIABLES=================
-    let valore = 0
-    let resultado = 0
-    let dolar = 545
-    let euro = 300.89
+  let resultado = 0;
+  const dolar = 545;
+  const euro = 300.89;
+  const valore = parseFloat(document.getElementById("valor").value);
+  
+  if (isNaN(valore) || valore <= 0) {
+    return alert("INGRESE UN NÚMERO, MAYOR A 0");
+  }
 
-    //==================COMPROBAR NUMERO=================
-    valore = parseFloat(document.getElementById("valor").value)
-    
-    if(isNaN(valore)|| valore <= 0){
-        return console.log("INGRESE UN NÚMERO, MAYOR A 0 ")
-    }
-        //==================CAMBIO DOLAR A PESO=================
-    if (document.getElementById("uno").checked) {
-        resultado = valore / dolar
-        resultado = resultado.toFixed(2)
-        console.log("El cambio de Pesos a Dolar blue es de: $" + resultado)
-        resultadosConversion.push("$" + resultado); //agregamos el resultado al array
-    }
-    
-    //==================CAMBIO DOLAR A EURO=================
-    else if (document.getElementById("dos").checked) {
-        resultado = valore / euro;
-        resultado = resultado.toFixed(2)
-        console.log("El cambio de Pesos a Euro oficial es de: €" + resultado);
-        resultadosConversion.push("€" + resultado);
-    }
-    
-    else {
-        console.log("Debes completar todos los campos")
-    }
+  if (document.getElementById("uno").checked) {
+    resultado = valore / dolar;
+    resultado = resultado.toFixed(2);
+    resultadosConversion.push("$" + resultado);
+  } else if (document.getElementById("dos").checked) {
+    resultado = valore / euro;
+    resultado = resultado.toFixed(2);
+    resultadosConversion.push("€" + resultado);
+  } else {
+    return alert("Debes completar todos los campos");
+  }
+
+  localStorage.setItem('resultadosConversion', JSON.stringify(resultadosConversion));
+  showLatestResults();
 }
- console.log("Resulatdos de conversion:" , resultadosConversion)
 
+function showLatestResults() {
+  const storedResultadosConversion = JSON.parse(localStorage.getItem('resultadosConversion')) || [];
+  const lastTwoResults = storedResultadosConversion.slice(-2);
+
+  // Mostrar resultados en pantalla
+  resultadosDiv.innerHTML = "<p>Últimos 2 resultados de cotizaciones:</p>" + lastTwoResults.join(', ');
+}
+
+// Mostrar resultados almacenados en el localStorage
+showLatestResults();

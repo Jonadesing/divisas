@@ -5,9 +5,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.5;
   background-color: lightseagreen;
-  color: green;
+  color: black;
   font-family: 'Nunito Sans', sans-serif;
   font-size: large;
+
 }
 
 h1 {
@@ -23,6 +24,7 @@ h1 {
   margin-right: auto;
   background-color: white;
   padding: 30px;
+  border-radius: 50px;
 }
 p{
   margin: 30px;
@@ -36,4 +38,8 @@ input {
   padding: 10px 15px;
   outline: none;
   width: auto;
+  margin: 10px;
+  border-radius: 5px;
+
 }
+
