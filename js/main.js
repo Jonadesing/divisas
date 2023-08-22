@@ -1,63 +1,66 @@
- //-----Obtener elementos del DOM
- const loginSection = document.getElementById('loginSection');
- const calculatorSection = document.getElementById('calculatorSection');
- const loginButton = document.getElementById('loginButton');
- const cotizadorButton = document.getElementById('cotizador');
- const resultadosDiv = document.getElementById('resultados');
+document.addEventListener("DOMContentLoaded", function () {
+  const API_BASE_URL = 'https://v6.exchangerate-api.com/v6/cd149818b2da544186564ed1/latest/ARS';
+  // Obtener elementos del DOM
+  const loginSection = document.getElementById('loginSection');
+  const calculatorSection = document.getElementById('calculatorSection');
+  const loginButton = document.getElementById('loginButton');
+  const cotizadorButton = document.getElementById('cotizador');
+  const resultadosDiv = document.getElementById('resultados');
+  const currencySelect = document.getElementById('currencySelect');
 
- //------Array para almacenar los resultados de cotización
- const resultadosConversion = [];
+  const resultadosConversion = [];
 
- //------Manejador de evento para el botón de inicio de sesión
- loginButton.addEventListener('click', function() {
-   // Simulación de inicio de sesión, ocultar sección de inicio de sesión y mostrar calculadora
-   const username = document.getElementById('username').value;
-   if (username) {
-     loginSection.style.display = 'none';
-     calculatorSection.style.display = 'block';
-   }
- });
+  // Evento para el botón de inicio de sesión
+  loginButton.addEventListener('click', function() {
+    const username = document.getElementById('username').value;
+    if (username) {
+      loginSection.style.display = 'none';
+      calculatorSection.style.display = 'block';
+    }
+  });
 
- //-----Manejador de evento para el botón de cotización
- cotizadorButton.addEventListener('click', function() {
-   convertir();
- });
+  // Evento para el botón de cotización
+  cotizadorButton.addEventListener('click', function() {
+    convertir();
+  });
 
- //------Función para realizar la conversión de divisas
- function convertir() {
-   let resultado = 0;
-   const dolar = 545;
-   const euro = 300.89;
-   const valore = parseFloat(document.getElementById("valor").value);
-   
-   if (isNaN(valore) || valore <= 0) {
-     return alert("INGRESE UN NÚMERO, MAYOR A 0");
-   }
+  // Resto del código...
 
-   if (document.getElementById("uno").checked) {
-     resultado = valore / dolar;
-     resultado = resultado.toFixed(2);
-     resultadosConversion.push("$" + resultado);
-   } else if (document.getElementById("dos").checked) {
-     resultado = valore / euro;
-     resultado = resultado.toFixed(2);
-     resultadosConversion.push("€" + resultado);
-   } else {
-     return alert("Debes completar todos los campos");
-   }
+// Función para realizar la conversión de divisas
+async function convertir() {
+  const valor = parseFloat(document.getElementById("valor").value);
+  const selectedCurrency = currencySelect.value;
 
-   localStorage.setItem('resultadosConversion', JSON.stringify(resultadosConversion));
-   showLatestResults();
- }
+  try {
+      const response = await fetch(API_BASE_URL);
+      const data = await response.json();
 
- //-------Función para mostrar los últimos resultados almacenados
- function showLatestResults() {
-   const storedResultadosConversion = JSON.parse(localStorage.getItem('resultadosConversion')) || [];
-   const lastTwoResults = storedResultadosConversion.slice(-2);
+      if (data.conversion_rates && data.conversion_rates[selectedCurrency]) {
+          const conversionRate = data.conversion_rates[selectedCurrency];
+          const resultado = (valor * conversionRate).toFixed(2);
+          const formattedResult = selectedCurrency === 'USD' ? `$${resultado}` : `${selectedCurrency} ${resultado}`;
+          resultadosConversion.push(formattedResult);
 
-   //------Mostrar resultados en pantalla
-   resultadosDiv.innerHTML = "<p>Últimos 2 resultados de cotizaciones:</p>" + lastTwoResults.join(', ');
- }
+          localStorage.setItem('resultadosConversion', JSON.stringify(resultadosConversion));
+          showLatestResults();
+      } else {
+          alert("No se encontró tasa de cambio para la moneda seleccionada");
+      }
+  } catch (error) {
+      console.error("Error al obtener tasas de cambio:", error);
+      alert("Hubo un error al obtener tasas de cambio. Por favor, inténtalo más tarde.");
+  }
+}
 
- //-----Mostrar resultados almacenados al cargar la página
- showLatestResults();
+
+  // Función para mostrar los últimos resultados almacenados
+  function showLatestResults() {
+    const storedResultadosConversion = JSON.parse(localStorage.getItem('resultadosConversion')) || [];
+    const lastTwoResults = storedResultadosConversion.slice(-2);
+
+    resultadosDiv.innerHTML = "<p>Últimos 2 resultados de cotizaciones:</p>" + lastTwoResults.join(', ');
+  }
+
+  // Mostrar resultados almacenados al cargar la página
+  showLatestResults();
+});
