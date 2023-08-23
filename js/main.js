@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   const API_BASE_URL = 'https://v6.exchangerate-api.com/v6/cd149818b2da544186564ed1/latest/ARS';
-  // Obtener elementos del DOM
+//------------- Obtener elementos del DOM----------------
   const loginSection = document.getElementById('loginSection');
   const calculatorSection = document.getElementById('calculatorSection');
   const loginButton = document.getElementById('loginButton');
@@ -10,23 +10,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const resultadosConversion = [];
 
-  // Evento para el botón de inicio de sesión
-  loginButton.addEventListener('click', function() {
-    const username = document.getElementById('username').value;
-    if (username) {
-      loginSection.style.display = 'none';
-      calculatorSection.style.display = 'block';
-    }
-  });
+//-------------- Evento para el botón de inicio de sesión------
+loginButton.addEventListener('click', function() {
+  const username = document.getElementById('username').value;
+  if (username) {
+//-------------- Mostrar SweetAlert de bienvenida------------
+    Swal.fire({
+      title: '¡Bienvenido!',
+      text: `Hola, ${username}!`,
+      icon: 'success',
+      confirmButtonText: 'Continuar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        loginSection.style.display = 'none';
+        calculatorSection.style.display = 'block';
+      }
+    });
+  }
+});
 
-  // Evento para el botón de cotización
+  //------------- Evento para el botón de cotización--------------
   cotizadorButton.addEventListener('click', function() {
     convertir();
   });
 
-  // Resto del código...
-
-// Función para realizar la conversión de divisas
+//------Función para realizar la conversión de divisas------
 async function convertir() {
   const valor = parseFloat(document.getElementById("valor").value);
   const selectedCurrency = currencySelect.value;
@@ -53,7 +61,7 @@ async function convertir() {
 }
 
 
-  // Función para mostrar los últimos resultados almacenados
+//------- Función para mostrar los últimos resultados almacenados----------------
   function showLatestResults() {
     const storedResultadosConversion = JSON.parse(localStorage.getItem('resultadosConversion')) || [];
     const lastTwoResults = storedResultadosConversion.slice(-2);
@@ -61,6 +69,6 @@ async function convertir() {
     resultadosDiv.innerHTML = "<p>Últimos 2 resultados de cotizaciones:</p>" + lastTwoResults.join(', ');
   }
 
-  // Mostrar resultados almacenados al cargar la página
+//-------------Mostrar resultados almacenados al cargar la página----------------------
   showLatestResults();
 });
